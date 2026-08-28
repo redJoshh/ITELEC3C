@@ -38,7 +38,9 @@
                 <h2 class="font-brand text-5xl md:text-7xl text-theme-light mt-4">The Student</h2>
                 <p class="font-sans text-theme-light/80 text-sm md:text-base leading-relaxed mt-6">
                     Before the stage lights, Joselle was just a veterinary student who enjoyed watching pageantry. She
-                    enjoyed being an inspiration while tending care to animals, but she never imagined that she would
+                    enjoyed watching different pageantry like the locals and Miss Universe while tending care to animals,
+                    but she never imagined that she
+                    would
                     one day be the one inspiring others on stage. Her journey began with a simple desire to make a
                     difference, and it was through her dedication to both her studies and her community that she found
                     her true calling.

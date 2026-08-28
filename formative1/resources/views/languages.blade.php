@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Languages</title>
+</head>
+
+<body>
+    <h1>Programming Languages</h1>
+
+    @foreach ($programming_languages as $language)
+        <li>{{ $loop->iteration }}. {{ $language }}</li>
+    @endforeach
+
+</body>
+
+</html>
