@@ -2,32 +2,28 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\HomeController;
+
 // use Illuminate\Http\Response;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/jobs', function () {
-    $title = "Job Listings";
-    $jobs = [
-        ['title' => 'Software Engineer', 'location' => 'New York'],
-        ['title' => 'Database Admin', 'location' => 'San Francisco'],
-        ['title' => 'Web Developer', 'location' => 'Los Angeles'],
-    ];
-    // return view('jobs.index', ['title' => "Job Listings"]);
-    // return view('jobs.index')->with('title', 'Job Listings');
-    return view('jobs.index', compact('title', 'jobs'));
-})->name('jobs');
+Route::get('/jobs/share', [JobController::class, 'share']);
+Route::resource('jobs', JobController::class);
+
+Route::get('/', [HomeController::class, 'index']);
 
 
-Route::get('/jobs/create', function () {
-    return view('jobs.create');
-})->name('jobs.create');
+// Route::get('/jobs/create', function () {
+//     return view('jobs.create');
+// })->name('jobs.create');
 
-Route::get('/users', function () {
-    return view("user", ['name' => "John Doe", 'age' => 18]);
-});
+// Route::get('/users', function () {
+//     return view("user", ['name' => "John Doe", 'age' => 18]);
+// });
 
 
 
