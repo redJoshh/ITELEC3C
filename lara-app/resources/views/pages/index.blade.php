@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,7 +9,10 @@
 </head>
 
 <body>
-    <h1>Welcome to Workopia</h1>
+    
 </body>
 
-</html>
+</html> --}}
+<x-layout>
+    <h1>Welcome to Workopia</h1>
+</x-layout>
