@@ -3,11 +3,19 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\AgeRestriction;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('age.restriction');
 
+Route::get('/agelimitpage', function () {
+    return view('agelimit');
+})->name('agelimit');
+
+Route::get('/menu', function () {
+    echo "menu";
+})->name('menu');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
