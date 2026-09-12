@@ -22,9 +22,17 @@
 
         <div class="bg-archer-charcoal border border-gray-700 rounded-xl p-8 text-center max-w-3xl mx-auto mb-20 shadow-2xl transition-all duration-300 hover:border-archer-neon"
             data-aos="fade-up" data-aos-delay="100">
-            <h2 class="text-3xl font-bold text-white mb-4 uppercase">Target: <span
-                    class="text-archer-neon {{ request()->is('home-workouts/default') ? 'invisible' : '' }}">{{ $focusArea }}</span>
-            </h2>
+
+            @if (strtolower($focusArea) === 'default')
+                <h2 class="text-3xl font-bold text-white mb-4 uppercase">
+                    <span class="text-archer-neon">Select a Target</span>
+                </h2>
+            @else
+                <h2 class="text-3xl font-bold text-white mb-4 uppercase">Target: <span
+                        class="text-archer-neon">{{ $focusArea }}</span>
+                </h2>
+            @endif
+
 
             <ul class="text-xl text-gray-300 leading-relaxed mb-8">
                 @foreach ($routine as $exercise)
@@ -37,7 +45,8 @@
                 <p class="text-gray-400 text-sm leading-relaxed">
                     <strong class="text-white uppercase tracking-wide">Trainer's Note:</strong> Remember, strength
                     training is nothing without the proper diet. Even with bodyweight
-                    routines, nutrition dictates your results. Make sure you are hitting your daily macros like a solid
+                    routines, nutrition dictates your results. Make sure you are hitting your daily macros like a
+                    solid
                     150g of protein and keeping up with your creatine intake to fuel muscle recovery and endurance.
                 </p>
             </div>
@@ -64,7 +73,7 @@
 
             <div class="flex justify-center lg:justify-end">
                 <img src="{{ asset('images/guest-home-image-10.png') }}" alt="Archer's Fitness Simple Beginner Workout"
-                    class="rounded-xl shadow-[0_0_25px_rgba(57,255,20,0.15)] max-w-full h-auto border border-gray-700 hover:border-archer-neon transition duration-500">
+                    class="rounded-xl max-w-full h-auto border border-gray-700 hover:border-archer-neon transition duration-500">
             </div>
         </div>
     </div>

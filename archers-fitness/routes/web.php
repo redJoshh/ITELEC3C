@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GuestPageController;
+use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\TrainerBookingController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -26,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/membership', [MembershipController::class, 'index'])->name('membership.index');
+    Route::post('/membership/apply', [MembershipController::class, 'apply'])->name('membership.apply');
+    Route::patch('/membership/cancel', [MembershipController::class, 'cancelMembership'])->name('membership.cancel');
+    Route::get('/book-trainer', [TrainerBookingController::class, 'index'])->name('trainer.book');
+    Route::post('/book-trainer', [TrainerBookingController::class, 'store'])->name('trainer.store');
 });
 
 require __DIR__ . '/auth.php';

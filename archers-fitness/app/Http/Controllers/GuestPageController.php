@@ -34,7 +34,6 @@ class GuestPageController extends Controller
             'message' => 'required|string|max:1000',
         ]);
         ContactMessage::create($validatedData);
-
         return redirect()->route('contact')->with('success', 'Thanks for reaching out!');
     }
 
