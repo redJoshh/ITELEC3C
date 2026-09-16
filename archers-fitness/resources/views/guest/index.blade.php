@@ -6,10 +6,10 @@
         <div
             class="relative z-10 px-6 py-24 sm:px-12 sm:py-32 lg:px-16 text-center lg:text-left flex flex-col lg:flex-row items-center justify-between">
             <div class="max-w-2xl" data-aos="flip-right" data-aos-delay="200">
-                <h1 class="text-5xl sm:text-6xl font-extrabold text-white tracking-tight mb-4 uppercase">
+                <h1 class="text-5xl font-graduate sm:text-6xl font-extrabold text-white tracking-tight mb-4 uppercase">
                     Commit to be <span class="text-archer-neon">Fit</span>
                 </h1>
-                <p class="text-lg sm:text-xl text-gray-300 mb-8">
+                <p class="text-lg font-playfair sm:text-xl text-gray-300 mb-8">
                     State-of-the-art equipment, expert trainers, and a community built on discipline.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center">

@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-archer-dark text-white min-h-screen flex flex-col">
+<body class="font-jost antialiased bg-archer-dark text-white min-h-screen flex flex-col">
     <nav class="bg-archer-charcoal border-b-2 border-archer-neon shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">

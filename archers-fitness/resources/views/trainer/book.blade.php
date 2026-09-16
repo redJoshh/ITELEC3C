@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <h2 class="font-extrabold text-2xl text-white leading-tight uppercase tracking-widest">Choose your <span
+        <h2 class="font-graduate font-bold text-2xl text-white leading-tight uppercase tracking-widest">Choose your <span
                 class="text-archer-neon">Trainer</span></h2>
     </x-slot>
     <div class="py-12">
@@ -10,7 +10,7 @@
             <div class="w-full lg:w-1/3">
                 <div
                     class="bg-archer-charcoal shadow-2xl sm:rounded-lg border border-archer-neon p-6 relative overflow-hidden ">
-                    <h3 class="text-xl font-bold text-white uppercase mb-6">Schedule Session</h3>
+                    <h3 class="text-xl font-bold text-white uppercase mb-6 font-graduate">Schedule Session</h3>
                     @if (session('success'))
                         <div
                             class="bg-green-900/50 border border-archer-neon text-black p-3 mb-6 rounded text-sm text-white font-bold">
@@ -54,7 +54,7 @@
             </div>
             <div class="w-full lg:w-2/3">
                 <div class="bg-archer-charcoal shadow-2xl sm:rounded-lg border border-archer-neon p-6">
-                    <h3 class="text-xl font-bold text-white uppercase mb-6">Your Bookings</h3>
+                    <h3 class="text-xl font-bold text-white uppercase mb-6 font-graduate">Your Bookings</h3>
 
                     @forelse ($bookings as $booking)
                         <div class="border-b border-gray-700 py-3 text-white">

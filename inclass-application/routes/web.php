@@ -7,11 +7,12 @@ use App\Http\Middleware\AgeRestriction;
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware('age.restriction');
 
-Route::get('/agelimitpage', function () {
-    return view('agelimit');
-})->name('agelimit');
+})->name('welcome');
+
+// Route::get('/agelimitpage', function () {
+//     return view('agelimit');
+// })->name('agelimit');
 
 Route::get('/menu', function () {
     echo "menu";

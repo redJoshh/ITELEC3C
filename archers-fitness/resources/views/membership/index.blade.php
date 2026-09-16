@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-extrabold text-2xl text-white leading-tight uppercase tracking-widest">
+        <h2 class="font-extrabold font-graduate text-2xl text-white leading-tight uppercase tracking-widest">
             Manage <span class="text-archer-neon">Membership</span>
         </h2>
     </x-slot>
@@ -11,8 +11,9 @@
 
                 <div class="flex flex-col md:flex-row justify-between items-center border-gray-700  ">
                     <div>
-                        <h3 class="text-2xl font-bold text-white uppercase tracking-wide">Current Plan</h3>
-                        <p class="text-gray-400 text-sm mt-1">Review your Archers Fitness subscription details.</p>
+                        <h3 class="text-2xl font-bold text-white uppercase tracking-wide font-graduate">Current Plan</h3>
+                        <p class="text-gray-400 text-sm mt-1 font-playfair">Review your Archers Fitness subscription
+                            details.</p>
                         <div class="{{ $membership->status === 'inactive' ? 'hidden' : '' }}">
                             <form action="{{ route('membership.cancel') }}" method="POST"
                                 onsubmit="return confirm('Are you absolutely sure you want to cancel your Archers Fitness membership? ');">
@@ -29,7 +30,9 @@
 
                     @if ($membership->status == 'Pending')
                         <div class="mt-4 md:mt-0 bg-archer-dark px-6 py-3 rounded border'border-yellow-500 ">
-                            <p class="text-xs text-gray-400 uppercase tracking-widest text-center font-bold mb-1">Status
+                            <p
+                                class="text-xs text-gray-400 uppercase tracking-widest text-center font-bold mb-1 font-playfair">
+                                Status
                             </p>
                             <p class="text-lg font-extrabold uppercase text-yellow">
                                 {{ $membership->status }}
@@ -37,7 +40,9 @@
                         </div>
                     @elseif($membership->status == 'active')
                         <div class="mt-4 md:mt-0 bg-archer-dark px-6 py-3 rounded border border-archer-neon ">
-                            <p class="text-xs text-gray-400 uppercase tracking-widest text-center font-bold mb-1">Status
+                            <p
+                                class="text-xs text-gray-400 uppercase tracking-widest text-center font-bold mb-1 font-playfair">
+                                Status
                             </p>
                             <p class="text-lg font-extrabold uppercase text-archer-neon">
                                 {{ $membership->status }}
@@ -60,19 +65,21 @@
                 <div class="space-y-6">
                     <div class="bg-archer-dark p-5 rounded border border-gray-800">
                         <p class="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1">Tier</p>
-                        <p class="text-xl text-white font-extrabold uppercase">{{ $membership->plan }}</p>
+                        <p class="text-xl text-white font-extrabold font-graduate uppercase">{{ $membership->plan }}</p>
 
                         @if ($membership->plan === 'student')
                             <div class="mt-3 pt-3 border-t border-gray-700">
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1">Student ID</p>
-                                <p class="text-sm text-archer-neon font-mono">{{ $membership->student_id }}</p>
+                                <p class="text-sm text-archer-neon  font-graduate">
+                                    {{ $membership->student_id }}</p>
                             </div>
                         @endif
                     </div>
 
                     <div class="bg-archer-dark p-5 rounded border border-gray-800">
                         <p class="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1">Billing Cycle</p>
-                        <p class="text-xl text-white font-extrabold uppercase">{{ $membership->billing }}</p>
+                        <p class="text-xl text-white font-extrabold uppercase font-graduate">{{ $membership->billing }}
+                        </p>
                     </div>
                 </div>
 

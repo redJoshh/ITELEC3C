@@ -1,10 +1,12 @@
 <x-guest-layout>
     <div class="max-w-4xl mx-auto" data-aos="fade-up">
         <div class="text-center mb-12">
-            <h2 class="text-4xl font-extrabold text-white uppercase">Get In <span class="text-archer-neon">Touch</span>
+            <h2 class="text-4xl font-extrabold text-white uppercase font-graduate">Get In <span
+                    class="text-archer-neon">Touch</span>
             </h2>
             <div class="h-1 w-24 bg-archer-neon mx-auto mt-4 rounded"></div>
-            <p class="mt-4 text-gray-400">Have questions about memberships, personal training, or our facilities? Feel
+            <p class="mt-4 text-gray-400 font-playfair">Have questions about memberships, personal training, or our
+                facilities? Feel
                 free to reach out to us!</p>
         </div>
 

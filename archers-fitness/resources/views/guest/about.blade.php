@@ -4,11 +4,11 @@
         <img src="{{ 'images/guest-home-image-5.png' }}" alt="Archers Fitness Community"
             class="absolute inset-0 w-full h-full object-cover object-[50%_40%] opacity-30" />
 
-        <div class="relative z-10 text-center px-4" data-aos="zoom-in" data-aos-delay="200">
+        <div class="relative z-10 text-center px-4 font-graduate" data-aos="zoom-in" data-aos-delay="200">
             <h1 class="text-5xl md:text-6xl font-extrabold text-white uppercase tracking-tighter mb-4">
                 More than just a <span class="text-archer-neon">Gym</span>
             </h1>
-            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p class="text-xl font-playfair text-gray-300 max-w-2xl mx-auto">
                 Here at Archer's, we are more than just a gym, we are a community here, a family to help you achieve
                 your fitness goals and create bonds!
             </p>

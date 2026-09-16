@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-extrabold text-2xl text-white leading-tight uppercase tracking-widest">
+        <h2 class="font-graduate font-bold text-2xl text-white leading-tight uppercase tracking-widest">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
@@ -8,14 +8,14 @@
     <div x-data="{ showModal: false, planType: 'standard' }" class="py-12 relative">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
-                <div class="bg-archer-dark border-l-4 border-archer-neon text-white p-4 mb-8 rounded shadow-lg flex justify-between items-center"
+                <div class="bg-archer-dark font-graduate border-l-4 border-archer-neon text-white p-4 mb-8 rounded shadow-lg flex justify-between items-center"
                     data-aos="fade-down">
                     <p class="font-bold tracking-wide">{{ session('success') }}</p>
                     <button onclick="this.parentElement.style.display='none'"
                         class="text-archer-neon hover:text-white font-bold text-xl">&times;</button>
                 </div>
             @elseif(session('error'))
-                <div class="bg-archer-dark border-l-4 border-red-500 text-red p-4 mb-8 rounded shadow-lg flex justify-between items-center"
+                <div class="bg-archer-dark font-graduate border-l-4 border-red-500 text-red p-4 mb-8 rounded shadow-lg flex justify-between items-center"
                     data-aos="fade-down">
                     <p class="font-bold tracking-wide">{{ session('error') }}</p>
                     <button onclick="this.parentElement.style.display='none'"
@@ -28,9 +28,9 @@
                 <div
                     class="p-6 text-white border-b border-gray-800 flex flex-col md:flex-row justify-between items-center">
                     <div>
-                        <h3 class="text-3xl font-bold uppercase mb-2">Welcome, <span
+                        <h3 class="text-3xl font-bold uppercase mb-2 font-graduate">Welcome, <span
                                 class="text-archer-neon">{{ Auth::user()->name }}</span></h3>
-                        <p class="text-gray-400">Let's get your training journey started.</p>
+                        <p class="text-gray-400 font-playfair">Let's get your training journey started.</p>
                     </div>
 
 
@@ -38,7 +38,7 @@
                         <div
                             class="mt-4 md:mt-0 bg-archer-dark px-6 py-4 rounded-lg border border-archer-neon text-center ">
                             <p class="text-sm text-gray-400 uppercase tracking-wide mb-1">Status</p>
-                            <p class="text-lg font-extrabold text-archer-neon uppercase mb-1">Membership:
+                            <p class="text-lg font-extrabold text-archer-neon uppercase mb-1 font-graduate">Membership:
                                 {{ Auth::user()->membership->status }}</p>
                             <p class="text-xs text-white uppercase">{{ Auth::user()->membership->plan }} -
                                 {{ Auth::user()->membership->billing }}</p>
@@ -61,7 +61,9 @@
                 <div class="bg-archer-charcoal shadow-lg sm:rounded-lg border border-archer-neon p-6 "
                     data-aos="fade-up">
                     <div class="flex justify-between items-center mb-6">
-                        <h4 class="text-xl font-bold text-white uppercase border-l-4 border-archer-neon pl-3">Today's
+                        <h4
+                            class="text-xl font-graduate font-bold text-white uppercase border-l-4 border-archer-neon pl-3">
+                            Today's
                             Agenda</h4>
                         <span
                             class="text-xs font-bold text-archer-dark bg-archer-neon uppercase tracking-widest px-3 py-1 rounded">Metrics
@@ -69,7 +71,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <!-- Book a Trainer CTA -->
+
                         <div
                             class="bg-archer-dark p-5 rounded-lg border border-gray-800 text-center shadow-inner md:col-span-2 flex flex-col justify-center items-center">
                             <h5 class="text-lg font-bold text-white uppercase mb-2">Ready to work out?</h5>
@@ -112,13 +114,16 @@
                 <div
                     class="bg-archer-charcoal shadow-lg sm:rounded-lg border border-gray-700 p-6 opacity-50 select-none">
                     <div class="flex justify-between items-center mb-4">
-                        <h4 class="text-xl font-bold text-white uppercase border-l-4 border-gray-500 pl-3">Unlock soon
+                        <h4
+                            class="text-xl font-bold text-white uppercase border-l-4 border-gray-500 pl-3 font-graduate">
+                            Unlock soon
                         </h4>
                         <span
                             class="text-xs font-bold text-gray-400 uppercase tracking-widest border border-gray-600 px-2 py-1 rounded shadow">Members
                             Only</span>
                     </div>
-                    <p class="text-gray-400 text-sm">Your height, weight, and booking a trainer feature will appear here
+                    <p class="text-gray-400 text-sm font-playfair">Your height, weight, and booking a trainer feature
+                        will appear here
                         once
                         you apply for a membership.</p>
                 </div>
