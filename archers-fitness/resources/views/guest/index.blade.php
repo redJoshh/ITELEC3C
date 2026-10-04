@@ -1,4 +1,9 @@
 <x-guest-layout>
+    @if (session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="relative bg-archer-dark overflow-hidden rounded-xl border border-gray-800 shadow-2xl mb-16"
         data-aos="flip-right">
         <img src="{{ asset('images/guest-home-image-1.png') }}" alt="Archers Fitness Gym Floor"

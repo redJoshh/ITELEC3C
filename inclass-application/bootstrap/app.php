@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         // $middleware->append(AgeRestriction::class);
         // $middleware->alias(['age.restriction' => AgeRestriction::class]);
+        $middleware->alias([
+            'check.role' => \App\Http\Middleware\CheckRole::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

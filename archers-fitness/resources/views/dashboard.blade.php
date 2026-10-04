@@ -56,6 +56,28 @@
                     @endif
                 </div>
             </div>
+            <div class="bg-archer-charcoal shadow-lg sm:rounded-lg border border-gray-700 p-6 mb-8" data-aos="fade-up">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="text-xl font-graduate font-bold text-white uppercase border-l-4 border-archer-neon pl-3">
+                        Latest Posts
+                    </h4>
+                </div>
+
+                @if ($posts->isEmpty())
+                    <p class="text-gray-400 font-playfair text-center py-6">No posts yet. Check back soon.</p>
+                @else
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        @foreach ($posts as $post)
+                            <a href="{{ route('posts.show', $post) }}"
+                                class="bg-archer-dark p-5 rounded-lg border border-gray-800 hover:border-archer-neon transition block">
+                                <h5 class="text-white font-bold uppercase mb-2 line-clamp-2">{{ $post->title }}</h5>
+                                <p class="text-gray-400 text-sm font-playfair line-clamp-3 mb-3">{{ $post->body }}</p>
+                                <span class="text-xs text-archer-neon uppercase font-bold">Read More &rarr;</span>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
 
             @if (Auth::user()->membership && Auth::user()->membership->status == 'active')
                 <div class="bg-archer-charcoal shadow-lg sm:rounded-lg border border-archer-neon p-6 "
@@ -180,7 +202,8 @@
 
                         <div x-show="planType === 'student'" x-collapse>
                             <label for="student_id"
-                                class="block text-sm font-bold text-archer-neon mb-2 uppercase tracking-wide">Student ID
+                                class="block text-sm font-bold text-archer-neon mb-2 uppercase tracking-wide">Student
+                                ID
                                 Number</label>
                             <input type="text" id="student_id" name="student_id"
                                 class="w-full bg-archer-dark border border-archer-neon rounded-md py-3 px-4 text-white focus:outline-none focus:ring-1 focus:ring-archer-neon transition"

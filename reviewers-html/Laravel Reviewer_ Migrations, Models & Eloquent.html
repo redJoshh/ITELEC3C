@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laravel Reviewer: Migrations, Models & Eloquent</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--tx:#1d1d1f;--mu:#6b6b70;--bd:#e0ded8;--ac:#e0452b;--ok:#1a7f4b;--okb:#e3f4ea;--no:#c0302a;--nob:#fbe7e5;--cb:#f0eee9;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#18181a;--card:#222225;--tx:#ececee;--mu:#9a9aa2;--bd:#38383d;--ac:#ff6a4f;--ok:#5fd18f;--okb:#17301f;--no:#ff8b84;--nob:#3a1d1b;--cb:#17171a}}
+:root[data-theme="dark"]{--bg:#18181a;--card:#222225;--tx:#ececee;--mu:#9a9aa2;--bd:#38383d;--ac:#ff6a4f;--ok:#5fd18f;--okb:#17301f;--no:#ff8b84;--nob:#3a1d1b;--cb:#17171a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:8px 0 2px}
+.sub{color:var(--mu);margin:0 0 12px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:5}
+.pr{height:8px;background:var(--bd);border-radius:6px;overflow:hidden}
+.pr i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.st{display:flex;justify-content:space-between;font-size:.85rem;color:var(--mu);margin-top:4px}
+h2{font-size:1.1rem;margin:22px 0 8px;color:var(--ac)}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:0 0 12px}
+.c.ok{border-color:var(--ok)}.c.no{border-color:var(--no)}
+.n{font-weight:700;color:var(--mu);font-size:.8rem;margin-bottom:4px}
+.q{margin:0 0 8px;overflow-wrap:anywhere}
+pre{background:var(--cb);border:1px solid var(--bd);border-radius:8px;padding:10px;overflow-x:auto;font-size:.82rem;margin:0 0 10px;max-width:100%}
+input[type=text]{font:inherit;font-family:ui-monospace,Menlo,monospace;font-size:.9rem;width:11em;max-width:100%;padding:3px 8px;margin:2px 3px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx)}
+input.ok{border-color:var(--ok);background:var(--okb)}input.no{border-color:var(--no);background:var(--nob)}
+label.o{display:block;padding:8px 10px;margin:5px 0;border:1px solid var(--bd);border-radius:8px;cursor:pointer;overflow-wrap:anywhere}
+label.o.ok{border-color:var(--ok);background:var(--okb)}label.o.no{border-color:var(--no);background:var(--nob)}
+label.o input{margin-right:8px}
+button{font:inherit;font-size:.9rem;padding:7px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;margin:8px 8px 0 0}
+button.p{background:var(--ac);border-color:var(--ac);color:#fff}
+button:disabled{opacity:.5;cursor:default}
+.f{margin-top:10px;padding:10px;border-radius:8px;font-size:.92rem;display:none}
+.f.ok{display:block;background:var(--okb);color:var(--ok)}.f.no{display:block;background:var(--nob);color:var(--no)}
+.f b{display:block}.f span{color:var(--tx)}
+.res{display:none;text-align:center;padding:18px;border:2px solid var(--ac);border-radius:12px;background:var(--card);margin:16px 0}
+.res h3{margin:0 0 4px;font-size:1.3rem}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.88em}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Laravel Reviewer</h1>
+<p class="sub">Migrations, Models, Eloquent ORM &amp; Seeding. 25 questions. Fill in the blanks, multiple choice, and code tracing.</p>
+<div class="bar"><div class="pr"><i id="pb"></i></div><div class="st"><span id="a">Answered 0/25</span><span id="s">Score 0</span></div></div>
+<div id="qs"></div>
+<div class="res" id="res"><h3 id="rt"></h3><p id="rm"></p><button class="p" onclick="init()">Try again</button></div>
+</div>
+<script>
+const Q=[
+{p:'A',q:'Migrations are stored in ___ and Eloquent models in ___.',b:[['database/migrations'],['app/models']],s:'database/migrations, app/Models',e:'Migration classes live in database/migrations; models are in app/Models.'},
+{p:'A',q:'Factories live in ___ and seeders live in ___.',b:[['database/factories'],['database/seeders']],s:'database/factories, database/seeders',e:'Both sit under database/.'},
+{p:'A',q:'Generate a model and its migration together:',c:'php artisan make:model Product ___',b:[['m']],s:'-m',e:'The -m flag creates the migration alongside the model.'},
+{p:'A',q:'Fill in both commands: make:___ ProductSeeder and make:___ ProductFactory.',b:[['seeder'],['factory']],s:'seeder, factory',e:'php artisan make:seeder and php artisan make:factory.'},
+{p:'A',q:'Run only the ProductSeeder class:',c:'php artisan db:seed ___',b:[['class=productseeder']],s:'--class=ProductSeeder',e:'Without --class, db:seed runs DatabaseSeeder.'},
+{p:'A',q:'Show executed vs. pending migrations:',c:'php artisan migrate:___',b:[['status']],s:'status',e:'migrate:status lists each migration and whether it ran.'},
+{p:'A',q:'Revert everything in Batch 2: rollback ___=2. Revert exactly the last two files: rollback ___=2.',b:[['batch'],['step']],s:'--batch, --step',e:'--batch targets a batch number; --step ignores batches and reverts the last N migrations.'},
+{p:'A',q:'___ prints SQL without running it (php artisan migrate ___). Compress old migrations with php artisan ___ (output goes to database/___/).',b:[['pretend'],['schema:dump'],['schema']],s:'--pretend, schema:dump, schema',e:'--pretend is a dry run. schema:dump squashes migrations into database/schema/.'},
+{p:'A',q:'Every POST/PUT/PATCH/DELETE form needs the ___ Blade directive, or you get HTTP ___ Page Expired. Validate with $request->___().',b:[['@csrf'],['419'],['validate']],s:'@csrf, 419, validate',e:'@csrf adds the hidden _token; without it the CSRF middleware returns 419.'},
+{p:'A',q:'Soft deletes need $table->___(); in the migration and use ___; in the model.',b:[['softdeletes'],['softdeletes']],s:'softDeletes, SoftDeletes',e:'Migration column helper: softDeletes(). Model trait: SoftDeletes.'},
+{p:'B',q:'Which command drops all tables directly WITHOUT running down(), then re-runs all migrations?',o:['migrate:rollback','migrate:reset','migrate:refresh','migrate:fresh'],a:3,e:'migrate:fresh bypasses down(). reset and refresh both run down().'},
+{p:'B',q:'Which table does a model named OrderItem map to by convention?',o:['OrderItem','order_item','order_items','orderitems'],a:2,e:'Singular class name becomes plural snake_case.'},
+{p:'B',q:'The products table has a user_id column. Which relationship in Product returns its owner?',o:["hasOne(User::class, 'id', 'user_id')","belongsTo(User::class, 'user_id', 'id')","hasMany(User::class, 'user_id')",'belongsToMany(User::class)'],a:1,e:'The table holding the foreign key is the child, so it uses belongsTo.'},
+{p:'B',q:'You call Product::create($request->all()) but the model has no $fillable or $guarded. What happens?',o:['Saved with all fields','Saved with no fields','MassAssignmentException is thrown','Nothing happens silently'],a:2,e:'Attributes not in $fillable are protected from mass assignment.'},
+{p:'B',q:'A POST form is submitted without @csrf. What is the result?',o:['HTTP 404','HTTP 419 Page Expired','HTTP 500','It submits normally'],a:1,e:'The CSRF middleware rejects it before the controller runs.'},
+{p:'B',q:"What does DB::table('products')->find(1) return?",o:['A hydrated Product model','An Eloquent Collection','A generic stdClass object','A Carbon instance'],a:2,e:'The Query Builder returns stdClass with raw strings, so created_at->diffForHumans() fails.'},
+{p:'B',q:'What does php artisan migrate --isolated do?',o:['Uses a separate database','Takes an atomic cache lock so only one server runs migrations','Runs only the newest migration','Skips foreign key checks'],a:1,e:'Atomic lock via the cache driver (e.g., Redis). Other nodes exit gracefully.'},
+{p:'B',q:'Which statement about migrate:refresh is correct?',o:['It runs migrate:reset, then migrate','It drops tables without calling down()','It rolls back only the latest batch','It only lists pending migrations'],a:0,e:'refresh = reset (all down() in reverse) + migrate.'},
+{p:'B',q:'Which method returns ONLY soft-deleted records?',o:['Product::withTrashed()','Product::onlyTrashed()','Product::trashed()','Product::deleted()'],a:1,e:'withTrashed() returns active and soft-deleted rows together.'},
+{p:'B',q:'Which is the best fit for hard deletes instead of soft deletes?',o:['invoices','orders','api_logs','accounts'],a:2,e:'Hard delete transient, high-volume data (sessions, api_logs, cart_tokens). Soft delete high-value transactional data.'},
+{p:'C',q:'Batch 1 has 3 migrations, Batch 2 has 2, Batch 3 has 1. You run the command below. Which down() methods execute?',c:'php artisan migrate:rollback --step=2',o:["Only Batch 3's migration","Batch 3's migration and the latest migration of Batch 2",'All of Batch 3 and Batch 2','Both migrations of Batch 2'],a:1,e:'--step ignores batches and reverts the last 2 migration files in reverse order.'},
+{p:'C',q:'20 products exist, none deleted. What is printed (the three echoes run together)?',c:"Product::find(1)->delete();\nProduct::find(2)->delete();\nProduct::find(3)->delete();\nProduct::onlyTrashed()->where('id', 3)->first()->forceDelete();\n\necho Product::count();\necho Product::withTrashed()->count();\necho Product::onlyTrashed()->count();",o:['17 19 2','17 20 3','17 17 3','20 19 2'],a:0,e:'count() = 20 - 3 = 17. Product 3 is permanently gone, so withTrashed() = 17 + 2 = 19. onlyTrashed() = 2.'},
+{p:'C',q:'What does this query return?',c:"Product::withTrashed()->where('user_id', 1)->get();",o:['Only active products of user 1','Only soft-deleted products of user 1','Active and soft-deleted products of user 1','All products of all users'],a:2,e:'withTrashed() removes the default deleted_at IS NULL filter.'},
+{p:'C',q:'There are 35 products. How many pages does this create, and how many items are on the last page?',c:'Product::latest()->paginate(10);',o:['3 pages, 5 on the last','4 pages, 5 on the last','4 pages, 10 on the last','5 pages, 5 on the last'],a:1,e:'10 + 10 + 10 + 5 = 35, so 4 pages with 5 items on the last.'},
+{p:'C',q:'Which line is the correct, secure way to set the owner of a new product in the controller?',o:["'user_id' => $request->user_id,","'user_id' => auth()->id(),","'user_id' => $request->input('user_id', 1),","'user_id' => User::all(),"],a:1,e:'Never trust user_id from the request (foreign key spoofing). Use the authenticated user.'}
+];
+const R=[];
+const norm=s=>s.toLowerCase().replace(/\s+/g,'').replace(/phpartisan/g,'').replace('$table->','').replace(/\(\)/g,'').replace(/^-+/,'').replace(/\/$/,'').replace(/;$/,'');
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function init(){
+ R.length=0;const root=document.getElementById('qs');root.innerHTML='';
+ document.getElementById('res').style.display='none';
+ const titles={A:'Part A: Fill in the Blanks',B:'Part B: Multiple Choice',C:'Part C: Code Tracing & Syntax'};
+ let last='';
+ Q.forEach((q,i)=>{
+  if(q.p!==last){last=q.p;root.appendChild(el('h2','',titles[q.p]))}
+  const card=el('div','c');card.id='q'+i;
+  card.appendChild(el('div','n','QUESTION '+(i+1)));
+  const qp=el('p','q');
+  if(q.b){q.q.split('___').forEach((t,k)=>{qp.appendChild(document.createTextNode(t));if(k<q.b.length){const inp=el('input');inp.type='text';inp.autocomplete='off';inp.autocapitalize='off';inp.spellcheck=false;inp.dataset.k=k;inp.onkeydown=e=>{if(e.key==='Enter')chk(i)};qp.appendChild(inp)}})}
+  else qp.textContent=q.q;
+  card.appendChild(qp);
+  if(q.c){const pre=el('pre');const cd=el('code','',q.c);if(q.b){cd.textContent='';q.c.split('___').forEach((t,k)=>{cd.appendChild(document.createTextNode(t));if(k<q.b.length)cd.appendChild(el('b','','_____'))})}pre.appendChild(cd);card.insertBefore(pre,qp.nextSibling)}
+  if(q.o){q.o.forEach((o,k)=>{const l=el('label','o');const r=el('input');r.type='radio';r.name='r'+i;r.value=k;l.appendChild(r);l.appendChild(document.createTextNode(String.fromCharCode(65+k)+'. '+o));card.appendChild(l)})}
+  const b1=el('button','p','Check');b1.onclick=()=>chk(i);
+  const b2=el('button','','Show answer');b2.onclick=()=>rev(i);
+  card.appendChild(b1);card.appendChild(b2);
+  const f=el('div','f');f.id='f'+i;card.appendChild(f);
+  root.appendChild(card);
+ });
+ upd();
+}
+function lock(i){const c=document.getElementById('q'+i);c.querySelectorAll('input,button').forEach(x=>x.disabled=true)}
+function ans(q){return q.b?q.s:String.fromCharCode(65+q.a)+'. '+q.o[q.a]}
+function fb(i,ok,msg){const f=document.getElementById('f'+i);f.className='f '+(ok?'ok':'no');f.innerHTML='';f.appendChild(el('b','',msg));f.appendChild(el('span','',Q[i].e));document.getElementById('q'+i).classList.add(ok?'ok':'no')}
+function chk(i){
+ if(R[i]!==undefined)return;const q=Q[i],c=document.getElementById('q'+i);let ok;
+ if(q.b){const ins=[...c.querySelectorAll('input[type=text]')];if(ins.every(x=>!x.value.trim()))return;
+  ok=true;ins.forEach((x,k)=>{const g=q.b[k].includes(norm(x.value));x.classList.add(g?'ok':'no');if(!g)ok=false})}
+ else{const s=c.querySelector('input[type=radio]:checked');if(!s)return;ok=+s.value===q.a;
+  c.querySelectorAll('label.o').forEach((l,k)=>{if(k===q.a)l.classList.add('ok');else if(l.firstChild.checked)l.classList.add('no')})}
+ R[i]=ok;lock(i);fb(i,ok,ok?'Correct!':'Not quite. Answer: '+ans(q));upd();
+}
+function rev(i){
+ if(R[i]!==undefined)return;const q=Q[i],c=document.getElementById('q'+i);R[i]=false;
+ if(q.o)c.querySelectorAll('label.o')[q.a].classList.add('ok');
+ lock(i);fb(i,false,'Answer: '+ans(q));upd();
+}
+function upd(){
+ const d=R.filter(x=>x!==undefined).length,s=R.filter(x=>x===true).length;
+ document.getElementById('pb').style.width=(d/Q.length*100)+'%';
+ document.getElementById('a').textContent='Answered '+d+'/'+Q.length;
+ document.getElementById('s').textContent='Score '+s;
+ if(d===Q.length){const r=document.getElementById('res');r.style.display='block';
+  document.getElementById('rt').textContent=s+' / '+Q.length+' ('+Math.round(s/Q.length*100)+'%)';
+  document.getElementById('rm').textContent=s>=23?'Exam ready!':s>=18?'Solid. Review the ones you missed.':s>=13?'Getting there. Re-read the guide, then retry.':'Keep studying: focus on artisan commands and relationships.';
+  r.scrollIntoView({behavior:'smooth',block:'center'})}
+}
+init();
+</script>
+</body>
+</html>

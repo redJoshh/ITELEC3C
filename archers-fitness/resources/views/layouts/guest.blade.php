@@ -45,8 +45,14 @@
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-4">
                     @auth
-                        <a href="{{ url('/dashboard') }}"
-                            class="text-sm font-medium text-gray-300 hover:text-archer-neon transition">Member Portal</a>
+                        @if (Auth::user()->isAdmin())
+                            <a href="{{ url('/admin/dashboard') }}"
+                                class="text-sm font-medium text-gray-300 hover:text-archer-neon transition">Admin Portal</a>
+                        @else
+                            <a href="{{ url('/dashboard') }}"
+                                class="text-sm font-medium text-gray-300 hover:text-archer-neon transition">Member
+                                Portal</a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}"
                             class="text-sm font-medium text-gray-300 hover:text-archer-neon transition">Log in</a>

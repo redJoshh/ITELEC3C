@@ -49,4 +49,10 @@ class GuestPageController extends Controller
         $routine = $muscleTarget[$target] ?? "Workout routine not found. Please select a valid target area.";
         return view('guest.home-workouts', ['focusArea' => ucfirst(str_replace('-', ' ', $target)), 'routine' => $routine]);
     }
+
+    public function sample()
+    {
+        $sampleSample = "Hello World";
+        return view('guest.sample', compact('sampleSample'));
+    }
 }

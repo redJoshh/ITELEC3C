@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'height', 'weight'])]
+#[Fillable(['name', 'email', 'password', 'height', 'weight', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -39,5 +39,13 @@ class User extends Authenticatable
     public function trainerBookings()
     {
         return $this->hasMany(TrainerBooking::class);
+    }
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }

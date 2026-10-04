@@ -12,20 +12,37 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                        class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('dashboard') ? 'border-archer-neon text-white' : 'border-transparent' }}">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if (Auth::user()->isAdmin())
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('admin.dashboard') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Admin Dashboard') }}
+                        </x-nav-link>
 
-                    <x-nav-link :href="route('trainer.book')" :active="request()->routeIs('trainer.book')"
-                        class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('trainer.book') ? 'border-archer-neon text-white' : 'border-transparent' }}">
-                        {{ __('Book a Trainer') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('admin.posts.create')" :active="request()->routeIs('admin.posts.create')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('trainer.book') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Add a Post') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('dashboard') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
 
-                    <x-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.index')"
-                        class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('membership.index') ? 'border-archer-neon text-white' : 'border-transparent' }}">
-                        {{ __('Membership') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('trainer.book')" :active="request()->routeIs('trainer.book')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('trainer.book') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Book a Trainer') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.index')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('membership.index') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Membership') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('posts.create')" :active="request()->routeIs('posts.create')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('posts.create') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Create a Post') }}
+                        </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
@@ -89,20 +106,33 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('dashboard') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @if (Auth::user()->isAdmin())
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('dashboard') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Admin Dashboard') }}
+                </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('trainer.book')" :active="request()->routeIs('trainer.book')"
-                class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('trainer.book') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
-                {{ __('Book a Trainer') }}
-            </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.posts.create')" :active="request()->routeIs('admin.posts.create')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('trainer.book') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Add a Post') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('dashboard') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.index')"
-                class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('membership.index') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
-                {{ __('Membership') }}
-            </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('trainer.book')" :active="request()->routeIs('trainer.book')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('trainer.book') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Book a Trainer') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.index')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('membership.index') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Membership') }}
+                </x-responsive-nav-link>
+            @endif
+
         </div>
 
         <!-- Responsive Settings Options -->

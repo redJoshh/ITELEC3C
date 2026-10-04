@@ -1,20 +1,11 @@
 <x-layout>
-    <h1>Job Listings</h1>
-    {{-- @if (!empty($jobs))
-        <ul>
-            @foreach ($jobs as $job)
-                <li>{{ $job['title'] }} - {{ $job['location'] }}</li>
-            @endforeach
-
-        </ul>
-    @else
-        <p>No jobs available.</p>
-    @endif --}}
-    <ul>
-        @forelse ($jobs as $job)
-            <li>{{ $loop->iteration }}- {{ $job }}</li>
+    <x-slot:pageTitle>All Jobs</x-slot:pageTitle>
+    <h1 class="text-2xl">{{ $title }}</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        @forelse($jobs as $job)
+            <x-job-card :job="$job" />
         @empty
-            <p>No jobs available.</p>
+            <p>No jobs found</p>
         @endforelse
-    </ul>
+    </div>
 </x-layout>
