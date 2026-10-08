@@ -50,9 +50,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/posts', [AdminPostController::class, 'index'])->name('posts.index');
     Route::get('/posts/create', [AdminPostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [AdminPostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/archived', [AdminPostController::class, 'archived'])->name('posts.archived');
     Route::get('/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('posts.edit');
     Route::patch('/posts/{post}', [AdminPostController::class, 'update'])->name('posts.update');
-    Route::delete('/posts/{post}', [AdminPostController::class, 'destroy'])->name('posts.delete');
+    Route::delete('/posts/{post}', [AdminPostController::class, 'archive'])->name('posts.archive');
+    Route::patch('/posts/{post}/restore', [AdminPostController::class, 'restore'])->name('posts.restore');
+    Route::delete('/posts/{post}/force-delete', [AdminPostController::class, 'forceDelete'])->name('posts.force-delete');
 });
 
 require __DIR__ . '/auth.php';

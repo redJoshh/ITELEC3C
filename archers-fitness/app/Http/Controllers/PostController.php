@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     //
-    public function index(Post $post)
+    public function index()
     {
-        $posts = Post::all();
+        $posts = Post::latest()->paginate(10);
         return view('dashboard', compact('posts'));
     }
 
@@ -25,8 +25,8 @@ class PostController extends Controller
     public function submit(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
+            'title' => 'required|string|min:10|max:255',
+            'body' => 'required|string|min:20',
         ]);
 
         $request->user()->posts()->create($validatedData);

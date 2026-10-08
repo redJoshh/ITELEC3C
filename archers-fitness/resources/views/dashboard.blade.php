@@ -15,7 +15,7 @@
                         class="text-archer-neon hover:text-white font-bold text-xl">&times;</button>
                 </div>
             @elseif(session('error'))
-                <div class="bg-archer-dark font-graduate border-l-4 border-red-500 text-red p-4 mb-8 rounded shadow-lg flex justify-between items-center"
+                <div class="bg-archer-dark font-graduate border-l-4 border-red-500 text-red-500 p-4 mb-8 rounded shadow-lg flex justify-between items-center"
                     data-aos="fade-down">
                     <p class="font-bold tracking-wide">{{ session('error') }}</p>
                     <button onclick="this.parentElement.style.display='none'"
@@ -75,6 +75,9 @@
                                 <span class="text-xs text-archer-neon uppercase font-bold">Read More &rarr;</span>
                             </a>
                         @endforeach
+                    </div>
+                    <div class="mt-6 flex justify-center">
+                        {{ $posts->links() }}
                     </div>
                 @endif
             </div>

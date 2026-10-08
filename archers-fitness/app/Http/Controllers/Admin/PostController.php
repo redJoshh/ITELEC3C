@@ -11,7 +11,7 @@ class PostController extends Controller
     //
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::latest()->orderByDesc('id')->paginate(10);
         return view('admin.dashboard', compact('posts'));
     }
     public function create()
@@ -21,8 +21,8 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string'
+            'title' => 'required|string|min:10|max:255',
+            'body' => 'required|string|min:20',
         ]);
         $request->user()->posts()->create($validatedData);
 
@@ -36,8 +36,8 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
+            'title' => 'required|string|min:10|max:255',
+            'body' => 'required|string|min:20',
         ]);
 
         $post->update($validated);
@@ -45,11 +45,34 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index')
             ->with('success', 'Post updated successfully.');
     }
-    public function destroy(Post $post)
+    public function archive(Post $post)
     {
         $post->delete();
 
         return redirect()->route('admin.dashboard')
-            ->with('success', 'Post deleted successfully.');
+            ->with('success', 'Post archived successfully.');
+    }
+    public function archived()
+    {
+        $posts = Post::onlyTrashed()->latest('deleted_at')->paginate(10);
+        return view('admin.posts.archived', compact('posts'));
+    }
+
+    public function restore($id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $post->restore();
+
+        return redirect()->route('admin.posts.archived')
+            ->with('success', 'Post restored successfully.');
+    }
+
+    public function forceDelete($id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $post->forceDelete();
+
+        return redirect()->route('admin.posts.archived')
+            ->with('success', 'Post permanently deleted.');
     }
 }

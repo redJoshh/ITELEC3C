@@ -36,7 +36,7 @@
 
                     <div class="mt-4 md:mt-0 bg-archer-dark px-6 py-4 rounded-lg border border-archer-neon text-center">
                         <p class="text-sm text-gray-400 uppercase tracking-wide mb-1">Total Posts</p>
-                        <p class="text-2xl font-extrabold text-archer-neon font-graduate">{{ $posts->count() }}</p>
+                        <p class="text-2xl font-extrabold text-archer-neon font-graduate">{{ $posts->total() }}</p>
                     </div>
                 </div>
             </div>
@@ -50,6 +50,7 @@
                         class="bg-archer-neon hover:bg-green-400 text-archer-dark font-extrabold py-2 px-6 rounded text-sm uppercase transition">
                         + Add Post
                     </a>
+
                 </div>
 
                 @if ($posts->isEmpty())
@@ -77,7 +78,7 @@
                                                 class="text-archer-neon hover:text-white uppercase text-xs font-bold">Edit</a>
                                             <button @click="confirmingDelete = true; deleteId = {{ $post->id }}"
                                                 class="text-red-500 hover:text-red-300 uppercase text-xs font-bold">
-                                                Delete
+                                                Archive
                                             </button>
                                         </td>
                                     </tr>
@@ -85,7 +86,13 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="mt-6 flex justify-center">
+                        {{ $posts->links() }}
+                    </div>
+                    <a href="{{ route('admin.posts.archived') }}"
+                        class="text-gray-400 hover:text-red-400 uppercase text-sm font-bold">
+                        View Archived Posts
+                    </a>
                 @endif
             </div>
 
@@ -98,7 +105,7 @@
             <div class="bg-archer-charcoal border border-red-500 rounded-xl w-full max-w-md overflow-hidden"
                 @click.away="confirmingDelete = false">
                 <div class="bg-archer-dark p-6 border-b border-gray-800">
-                    <h3 class="text-xl font-extrabold text-white uppercase tracking-wide">Delete Post?</h3>
+                    <h3 class="text-xl font-extrabold text-white uppercase tracking-wide">Archive Post?</h3>
                 </div>
                 <div class="p-6">
                     <p class="text-gray-400 font-playfair mb-6">This action cannot be undone.</p>

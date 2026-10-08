@@ -15,12 +15,24 @@
                     class="text-2xl font-bold uppercase mb-6 font-graduate text-white border-l-4 border-archer-neon pl-3">
                     New Post
                 </h3>
+                @if ($errors->any())
+                    <div
+                        class="bg-archer-dark font-graduate border-l-4 border-red-500 text-white p-4 mb-8 rounded shadow-lg">
+                        <p class="font-bold uppercase tracking-wide mb-2">Invalid inputs! Please fix the following:</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <form action="{{ route('admin.posts.store') }}" method="POST" class="space-y-6">
                     @csrf
 
                     <div>
-                        <label for="title" class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
+                        <label for="title"
+                            class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
                             Title
                         </label>
                         <input type="text" id="title" name="title" value="{{ old('title') }}"
@@ -35,7 +47,7 @@
                         </label>
                         <textarea id="body" name="body" rows="8"
                             class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition"
-                            placeholder="Write the full post content here..."></textarea>
+                            placeholder="Write the full post content here...">{{ old('body') }}</textarea>
                     </div>
 
                     <div class="flex gap-4 pt-4">

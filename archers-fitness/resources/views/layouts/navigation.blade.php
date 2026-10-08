@@ -22,6 +22,10 @@
                             class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('trainer.book') ? 'border-archer-neon text-white' : 'border-transparent' }}">
                             {{ __('Add a Post') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.posts.archived')" :active="request()->routeIs('admin.posts.archived')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('admin.posts.archived') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('Archives') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                             class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('dashboard') ? 'border-archer-neon text-white' : 'border-transparent' }}">
@@ -115,6 +119,10 @@
                 <x-responsive-nav-link :href="route('admin.posts.create')" :active="request()->routeIs('admin.posts.create')"
                     class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('trainer.book') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
                     {{ __('Add a Post') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.posts.archived')" :active="request()->routeIs('admin.posts.archived')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('admin.posts.archived') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Archives') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"

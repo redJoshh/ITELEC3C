@@ -11,7 +11,17 @@
                     class="text-2xl font-bold uppercase mb-6 font-graduate text-white border-l-4 border-archer-neon pl-3">
                     Editing: <span class="text-archer-neon">{{ $post->title }}</span>
                 </h3>
-
+                @if ($errors->any())
+                    <div
+                        class="bg-archer-dark font-graduate border-l-4 border-red-500 text-white p-4 mb-8 rounded shadow-lg">
+                        <p class="font-bold uppercase tracking-wide mb-2">Invalid inputs! Please fix the following:</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form action="{{ route('admin.posts.update', $post) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PATCH')
