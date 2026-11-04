@@ -39,7 +39,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::patch('/membership/cancel', [MembershipController::class, 'cancelMembership'])->name('membership.cancel');
     Route::get('/book-trainer', [TrainerBookingController::class, 'index'])->name('trainer.book');
     Route::post('/book-trainer', [TrainerBookingController::class, 'store'])->name('trainer.store');
+    Route::get('/posts/my-posts', [PostController::class, 'readMyPosts'])->name('posts.user');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
     Route::post('/posts', [PostController::class, 'submit'])->name('posts.submit');
 });
@@ -53,6 +57,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/posts/archived', [AdminPostController::class, 'archived'])->name('posts.archived');
     Route::get('/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('posts.edit');
     Route::patch('/posts/{post}', [AdminPostController::class, 'update'])->name('posts.update');
+    Route::get('/posts/{post}', [AdminPostController::class, 'showPost'])->name('posts.show');
     Route::delete('/posts/{post}', [AdminPostController::class, 'archive'])->name('posts.archive');
     Route::patch('/posts/{post}/restore', [AdminPostController::class, 'restore'])->name('posts.restore');
     Route::delete('/posts/{post}/force-delete', [AdminPostController::class, 'forceDelete'])->name('posts.force-delete');

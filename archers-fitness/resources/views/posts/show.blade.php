@@ -25,6 +25,14 @@
                         {{ $post->body }}
                     </p>
                 </div>
+                @if ($post->image_path)
+                    <div class="px-8 pt-8">
+                        <div class="bg-archer-dark border border-gray-800 mx-3 my-3 rounded-lg overflow-hidden">
+                            <img src="{{ asset('storage/' . $post->image_path) }}" alt="{{ $post->title }}"
+                                class="w-full max-h-96 object-contain mx-auto">
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="mt-6">
@@ -32,6 +40,10 @@
                     class="text-archer-neon hover:text-white uppercase text-sm font-bold">
                     Back to Dashboard
                 </a>
+                @if ($post->user_id === auth()->id())
+                    <a href="{{ route('posts.edit', $post->id) }}"
+                        class="text-archer-neon hover:text-white uppercase text-sm font-bold">Edit</a>
+                @endif
             </div>
 
         </div>

@@ -41,6 +41,10 @@
                             class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('membership.index') ? 'border-archer-neon text-white' : 'border-transparent' }}">
                             {{ __('Membership') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('posts.user')" :active="request()->routeIs('posts.user')"
+                            class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('posts.user') ? 'border-archer-neon text-white' : 'border-transparent' }}">
+                            {{ __('My Posts') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('posts.create')" :active="request()->routeIs('posts.create')"
                             class="text-gray-300 hover:text-archer-neon focus:text-archer-neon {{ request()->routeIs('posts.create') ? 'border-archer-neon text-white' : 'border-transparent' }}">
                             {{ __('Create a Post') }}
@@ -135,9 +139,18 @@
                     {{ __('Book a Trainer') }}
                 </x-responsive-nav-link>
 
+
                 <x-responsive-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.index')"
                     class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('membership.index') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
                     {{ __('Membership') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('posts.user')" :active="request()->routeIs('posts.user')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('posts.user') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('My Posts') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('posts.create')" :active="request()->routeIs('posts.create')"
+                    class="text-gray-300 hover:bg-archer-dark hover:text-archer-neon hover:border-archer-neon {{ request()->routeIs('posts.create') ? 'bg-archer-dark border-archer-neon text-white' : 'border-transparent' }}">
+                    {{ __('Create Post') }}
                 </x-responsive-nav-link>
             @endif
 

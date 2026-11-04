@@ -27,7 +27,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('admin.posts.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.posts.store') }}" enctype="multipart/form-data" method="POST" class="space-y-6">
                     @csrf
 
                     <div>
@@ -48,6 +48,17 @@
                         <textarea id="body" name="body" rows="8"
                             class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition"
                             placeholder="Write the full post content here...">{{ old('body') }}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="image"
+                            class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
+                            Image
+                        </label>
+                        <input type="file" id="image" name="image" accept="image/*" required
+                            class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition"
+                            placeholder="Upload your image here!">
+
                     </div>
 
                     <div class="flex gap-4 pt-4">

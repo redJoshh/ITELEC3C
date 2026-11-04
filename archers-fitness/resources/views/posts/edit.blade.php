@@ -1,0 +1,110 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-graduate font-bold text-2xl text-white leading-tight uppercase tracking-widest">
+            {{ __('Edit Post') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-archer-charcoal overflow-hidden shadow-2xl sm:rounded-lg border border-gray-700 p-8">
+                <h3
+                    class="text-2xl font-bold uppercase mb-6 font-graduate text-white border-l-4 border-archer-neon pl-3">
+                    Editing: <span class="text-archer-neon">{{ $post->title }}</span>
+                </h3>
+
+                @if ($errors->any())
+                    <div
+                        class="bg-archer-dark font-graduate border-l-4 border-red-500 text-white p-4 mb-8 rounded shadow-lg">
+                        <p class="font-bold uppercase tracking-wide mb-2">Invalid inputs! Please fix the following:</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-6">
+                    @csrf
+                    @method('PATCH')
+
+                    <div>
+                        <label for="title"
+                            class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
+                            Title
+                        </label>
+                        <input type="text" id="title" name="title" value="{{ old('title', $post->title) }}"
+                            class="w-full bg-archer-dark border rounded-md py-3 px-4 text-white focus:outline-none focus:ring-1 transition
+                                @error('title') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-gray-600 focus:border-archer-neon focus:ring-archer-neon @enderror">
+                        @error('title')
+                            <p class="mt-2 text-sm text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="body"
+                            class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
+                            Content
+                        </label>
+                        <textarea id="body" name="body" rows="8"
+                            class="w-full bg-archer-dark border rounded-md py-3 px-4 text-white focus:outline-none focus:ring-1 transition
+                                @error('body') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-gray-600 focus:border-archer-neon focus:ring-archer-neon @enderror">{{ old('body', $post->body) }}</textarea>
+                        @error('body')
+                            <p class="mt-2 text-sm text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div x-data="{ preview: null }">
+                        <label for="image"
+                            class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
+                            Image
+                        </label>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            @if ($post->image_path)
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Current</p>
+                                    <div class="bg-archer-dark border border-gray-800 rounded-lg overflow-hidden">
+                                        <img src="{{ asset('storage/' . $post->image_path) }}" alt="{{ $post->title }}"
+                                            class="w-full h-40 object-contain">
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div x-show="preview" style="display: none;">
+                                <p class="text-xs text-archer-neon uppercase tracking-wide mb-2">New (preview)</p>
+                                <div class="bg-archer-dark border border-archer-neon rounded-lg overflow-hidden">
+                                    <img :src="preview" alt="New image preview"
+                                        class="w-full h-40 object-contain">
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="file" id="image" name="image" accept="image/*"
+                            @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+                            class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition">
+                        <p class="text-xs text-gray-500 mt-2">
+                            Leave empty to keep the current image. JPG, PNG, or WEBP, up to 3 MB.
+                        </p>
+                        @error('image')
+                            <p class="mt-2 text-sm text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex gap-4 pt-4">
+                        <a href="{{ route('posts.user') }}"
+                            class="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded uppercase text-sm transition">
+                            Cancel
+                        </a>
+                        <button type="submit"
+                            class="flex-1 bg-archer-neon hover:bg-green-400 text-archer-dark font-extrabold py-3 px-4 rounded uppercase text-sm transition">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

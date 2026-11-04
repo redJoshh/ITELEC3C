@@ -35,7 +35,8 @@
                     Submit a workout log, testimonial, or update for the Archers Fitness community.
                 </p>
 
-                <form action="{{ route('posts.submit') }}" method="POST" class="space-y-6">
+                <form action="{{ route('posts.submit') }}" enctype="multipart/form-data" method="POST"
+                    class="space-y-6">
                     @csrf
 
                     <div>
@@ -56,6 +57,25 @@
                         <textarea id="body" name="body" rows="8"
                             class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition"
                             placeholder="Tell us about your journey...">{{ old('body') }}</textarea>
+                    </div>
+                    <div x-data="{ preview: null }">
+                        <label for="image"
+                            class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">
+                            Image
+                        </label>
+
+                        <div x-show="preview" style="display: none;"
+                            class="bg-archer-dark border border-archer-neon rounded-lg overflow-hidden mb-4">
+                            <img :src="preview" alt="Image preview" class="w-full h-48 object-contain">
+                        </div>
+
+                        <input type="file" id="image" name="image" accept="image/*" required
+                            @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+                            class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition">
+                        <p class="text-xs text-gray-500 mt-2">JPG, PNG, or WEBP, up to 3 MB.</p>
+                        @error('image')
+                            <p class="mt-2 text-sm text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <button type="submit"

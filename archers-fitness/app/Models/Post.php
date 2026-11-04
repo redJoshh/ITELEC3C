@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['title', 'body', 'user_id'])]
+#[Fillable(['title', 'body', 'user_id', 'image_path'])]
 class Post extends Model
 {
     use HasFactory, SoftDeletes;

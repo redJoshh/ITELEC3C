@@ -22,7 +22,8 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{ route('admin.posts.update', $post) }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.posts.update', $post) }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-6">
                     @csrf
                     @method('PATCH')
 
@@ -43,19 +44,40 @@
                         <textarea id="body" name="body" rows="8"
                             class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition">{{ old('body', $post->body) }}</textarea>
                     </div>
-
-                    <div class="flex gap-4 pt-4">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded uppercase text-sm transition">
-                            Cancel
-                        </a>
-                        <button type="submit"
-                            class="flex-1 bg-archer-neon hover:bg-green-400 text-archer-dark font-extrabold py-3 px-4 rounded uppercase text-sm transition">
-                            Save Changes
-                        </button>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Current</p>
+                        <div class="bg-archer-dark border border-gray-800 rounded-lg overflow-hidden">
+                            <img src="{{ asset('storage/' . $post->image_path) }}" alt="{{ $post->title }}"
+                                class="w-full h-40 object-contain">
+                        </div>
                     </div>
-                </form>
+                    <div x-show="preview" style="display: none;">
+                        <p class="text-xs text-archer-neon uppercase tracking-wide mb-2">New (preview)</p>
+                        <div class="bg-archer-dark border border-archer-neon rounded-lg overflow-hidden">
+                            <img :src="preview" alt="New image preview" class="w-full h-40 object-contain">
+                        </div>
+                    </div>
             </div>
+
+            <input type="file" id="image" name="image" accept="image/*"
+                @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+                class="w-full bg-archer-dark border border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:border-archer-neon focus:ring-1 focus:ring-archer-neon transition">
+            <p class="text-xs text-gray-500 mt-2">
+                Leave empty to keep the current image. JPG, PNG, or WEBP, up to 3 MB.
+            </p>
+
+            <div class="flex gap-4 pt-4">
+                <a href="{{ route('admin.dashboard') }}"
+                    class="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded uppercase text-sm transition">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="flex-1 bg-archer-neon hover:bg-green-400 text-archer-dark font-extrabold py-3 px-4 rounded uppercase text-sm transition">
+                    Save Changes
+                </button>
+            </div>
+            </form>
         </div>
+    </div>
     </div>
 </x-app-layout>

@@ -74,12 +74,19 @@
                                         <td class="py-3 pr-4 text-gray-400">{{ $post->created_at->format('M d, Y') }}
                                         </td>
                                         <td class="py-3 pr-4 text-right space-x-3">
-                                            <a href="{{ route('admin.posts.edit', $post) }}"
-                                                class="text-archer-neon hover:text-white uppercase text-xs font-bold">Edit</a>
-                                            <button @click="confirmingDelete = true; deleteId = {{ $post->id }}"
-                                                class="text-red-500 hover:text-red-300 uppercase text-xs font-bold">
-                                                Archive
-                                            </button>
+                                            <a href="{{ route('admin.posts.show', $post->id) }}"
+                                                class="text-gray-300 hover:text-white uppercase text-xs font-bold">View</a>
+                                            @if ($post->user_id === auth()->id())
+                                                <a href="{{ route('admin.posts.edit', $post) }}"
+                                                    class="text-archer-neon hover:text-white uppercase text-xs font-bold">Edit</a>
+                                            @endif
+                                            @if ($post->user_id === auth()->id())
+                                                <button
+                                                    @click="confirmingDelete = true; deleteId = {{ $post->id }}"
+                                                    class="text-red-500 hover:text-red-300 uppercase text-xs font-bold">
+                                                    Archive
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
