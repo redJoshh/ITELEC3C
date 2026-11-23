@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #1b254b;
+  --color-coral: #ff5e5b;
+  --color-coral-hover: #e84b48;
+  --color-canvas: #f8f9fc;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-navy);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    sans-serif;
+}

@@ -71,6 +71,7 @@ class PostController extends Controller
         if ($request->hasFile('image')) {
             $newImage = $this->saveWatermarkedImage($request->file('image'));
             $oldImage = $post->image_path;
+            
             $post->image_path = $newImage;
         }
 
@@ -115,7 +116,12 @@ class PostController extends Controller
     public function forceDelete(int $id)
     {
         $post = Post::onlyTrashed()->findOrFail($id);
+        $imagePath = $post->image_path;
+
         $post->forceDelete();
+        if ($imagePath) {
+            Storage::disk('public')->delete($imagePath);
+        }
 
         return redirect()->route('admin.posts.archived')
             ->with('success', 'Post permanently deleted.');

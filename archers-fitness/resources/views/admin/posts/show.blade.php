@@ -1,4 +1,4 @@
-<x-app-layout>
+    <x-app-layout>
     <x-slot name="header">
         <h2 class="font-graduate font-bold text-2xl text-white leading-tight uppercase tracking-widest">
             {{ __('Post') }}
