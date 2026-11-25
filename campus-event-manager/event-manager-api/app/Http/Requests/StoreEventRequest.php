@@ -30,7 +30,7 @@ class StoreEventRequest extends FormRequest
             'location' => ['required', 'string', 'max:255'],
             'category' => ['required', Rule::in(Event::categories)],
             'status' => ['required', Rule::in(Event::statuses)],
-            'capacity' => ['required', 'integer', 'min:1'],
+            'capacity' => ['required', 'integer', 'min:1', 'max:1000'],
         ];
     }
 }

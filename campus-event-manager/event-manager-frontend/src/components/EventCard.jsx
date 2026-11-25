@@ -18,7 +18,7 @@ export default function EventCard({
     STATUS_STYLES[event.status] || "bg-slate-100 text-slate-700";
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between hover:shadow-md transition">
+    <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between hover:shadow-md transition">
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
           <span

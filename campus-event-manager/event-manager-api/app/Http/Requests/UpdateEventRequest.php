@@ -31,7 +31,7 @@ class UpdateEventRequest extends FormRequest
             'location' => ['sometimes', 'required', 'string', 'max:255'],
             'category' => ['sometimes', 'required', Rule::in(Event::categories)],
             'status' => ['sometimes', 'required', Rule::in(Event::statuses)],
-            'capacity' => ['sometimes', 'required', 'integer', 'min:1'],
+            'capacity' => ['sometimes', 'required', 'integer', 'min:1', 'max:1000'],
         ];
     }
 }

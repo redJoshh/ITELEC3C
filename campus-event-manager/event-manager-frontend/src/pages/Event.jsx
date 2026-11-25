@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import api from "../api";
+import { useAuth } from "../useAuth";
+import FilterBar from "../components/FilterBar";
 import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
-import FilterBar from "../components/FilterBar";
-import { CATEGORY_STYLES, STATUS_STYLES } from "../constants";
-import { useAuth } from "../useAuth";
 
 const DEFAULT_FILTERS = {
   search: "",
@@ -18,59 +17,64 @@ const DEFAULT_FILTERS = {
   sort_order: "asc",
 };
 
+function formatDate(dateString) {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleString();
+}
+
 export default function Events() {
   const { user, logout } = useAuth();
 
+  const [view, setView] = useState("active");
   const [events, setEvents] = useState([]);
+  const [meta, setMeta] = useState(null);
+  const [page, setPage] = useState(1);
+
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [view, setView] = useState("active");
-  const [reloadKey, setReloadKey] = useState(0);
-  const [page, setPage] = useState(1);
-  const [meta, setMeta] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [feedback, setFeedback] = useState("");
+  const [success, setSuccess] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   const [formOpen, setFormOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
+  const [formError, setFormError] = useState("");
   const [viewingEvent, setViewingEvent] = useState(null);
-  const [serverErrors, setServerErrors] = useState({});
 
-  const role = user.role?.toLowerCase();
-  const isAdmin = role === "admin";
-  const canCreate = isAdmin || role === "organizer";
-  const goToPage = (targetPage) => {
+  const isAdmin = user?.role === "admin";
+  const isOrganizer = user?.role === "organizer";
+  const canCreate = isAdmin || isOrganizer;
+
+  const canManage = (event) => {
+    if (isAdmin) return true;
     if (
-      !meta ||
-      targetPage < 1 ||
-      targetPage > meta.last_page ||
-      targetPage === page
-    )
-      return;
-    setLoading(true);
-    setPage(targetPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      isOrganizer &&
+      (event.user_id === user.id || event.user?.id === user.id)
+    ) {
+      return true;
+    }
+    return false;
   };
-  const canManage = (event) =>
-    isAdmin ||
-    (role === "organizer" && Number(event.user_id) === Number(user.id));
+
+  useEffect(() => {
+    AOS.init({ duration: 500, once: true });
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(filters.search);
-      setPage(1);
-    }, 500);
+    }, 300);
+
     return () => clearTimeout(timer);
   }, [filters.search]);
 
   useEffect(() => {
-    const controller = new AbortController();
+    const params = { page };
 
-    const params = {};
     if (view === "active") {
-      params.page = page;
       if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
       if (filters.category) params.category = filters.category;
       if (filters.status) params.status = filters.status;
@@ -83,21 +87,18 @@ export default function Events() {
     const endpoint = view === "archived" ? "/events/archived" : "/events";
 
     api
-      .get(endpoint, { params, signal: controller.signal })
+      .get(endpoint, { params })
       .then((res) => {
         setEvents(res.data.data);
         setMeta(res.data.meta || null);
         setError("");
       })
       .catch((err) => {
-        if (err.name === "CanceledError" || err.code === "ERR_CANCELED") return;
         setError(err.response?.data?.message || "Failed to load events.");
       })
       .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
+        setLoading(false);
       });
-
-    return () => controller.abort();
   }, [
     view,
     page,
@@ -111,74 +112,112 @@ export default function Events() {
     reloadKey,
   ]);
 
-  const triggerReload = (message = "") => {
-    setLoading(true);
-    setFeedback(message);
-    setReloadKey((k) => k + 1);
-  };
+  useEffect(() => {
+    AOS.refresh();
+  }, [events]);
 
   const handleFilterChange = (field, value) => {
     setLoading(true);
-    if (field !== "search") setPage(1);
+    setPage(1);
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleReset = () => {
     setLoading(true);
+    setPage(1);
     setFilters(DEFAULT_FILTERS);
     setDebouncedSearch("");
+  };
+
+  const handleTabChange = (nextView) => {
+    if (nextView === view) return;
+    setLoading(true);
     setPage(1);
+    setSuccess("");
+    setError("");
+    setView(nextView);
+  };
+
+  const goToPage = (nextPage) => {
+    setLoading(true);
+    setPage(nextPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const openCreate = () => {
     setEditingEvent(null);
-    setServerErrors({});
+    setFormErrors({});
+    setFormError("");
     setFormOpen(true);
   };
 
   const openEdit = (event) => {
     setEditingEvent(event);
-    setServerErrors({});
+    setFormErrors({});
+    setFormError("");
     setFormOpen(true);
   };
 
-  const handleSave = async (payload) => {
-    setServerErrors({});
+  const closeForm = () => {
+    setFormOpen(false);
+    setEditingEvent(null);
+    setFormErrors({});
+    setFormError("");
+  };
+
+  const handleFormSubmit = async (payload) => {
+    setFormErrors({});
+    setFormError("");
+
     try {
       if (editingEvent) {
-        await api.put(`/events/${editingEvent.id}`, payload);
-        setFormOpen(false);
-        triggerReload("Event updated successfully.");
+        await api.patch(`/events/${editingEvent.id}`, payload);
+        setSuccess("Event updated successfully.");
       } else {
         await api.post("/events", payload);
-        setFormOpen(false);
-        triggerReload("Event created successfully.");
+        setSuccess("Event created successfully.");
       }
+
+      closeForm();
+      setLoading(true);
+      setReloadKey((k) => k + 1);
     } catch (err) {
-      if (err.response?.status === 422 && err.response.data?.errors) {
-        setServerErrors(err.response.data.errors);
+      const status = err.response?.status;
+      const data = err.response?.data;
+
+      if (status === 422 && data?.errors) {
+        setFormErrors(data.errors);
+      } else if (status === 403) {
+        setFormError(data?.message || "You do not have permission to do that.");
       } else {
-        setError(err.response?.data?.message || "Could not save event.");
+        setFormError(
+          data?.message || "Something went wrong. Please try again.",
+        );
       }
     }
   };
 
   const handleDelete = async (event) => {
     if (!window.confirm(`Archive "${event.title}"?`)) return;
+
     try {
       await api.delete(`/events/${event.id}`);
-      triggerReload("Event archived.");
+      setSuccess("Event archived successfully.");
+      setLoading(true);
+      setReloadKey((k) => k + 1);
     } catch (err) {
-      setError(err.response?.data?.message || "Could not delete event.");
+      setError(err.response?.data?.message || "Failed to archive event.");
     }
   };
 
   const handleRestore = async (event) => {
     try {
       await api.post(`/events/${event.id}/restore`);
-      triggerReload("Event restored.");
+      setSuccess("Event restored successfully.");
+      setLoading(true);
+      setReloadKey((k) => k + 1);
     } catch (err) {
-      setError(err.response?.data?.message || "Could not restore event.");
+      setError(err.response?.data?.message || "Failed to restore event.");
     }
   };
 
@@ -187,36 +226,33 @@ export default function Events() {
       !window.confirm(
         `Permanently delete "${event.title}"? This cannot be undone.`,
       )
-    )
+    ) {
       return;
+    }
+
     try {
       await api.delete(`/events/${event.id}/forcedelete`);
-      triggerReload("Event permanently deleted.");
+      setSuccess("Event permanently deleted.");
+      setLoading(true);
+      setReloadKey((k) => k + 1);
     } catch (err) {
       setError(
-        err.response?.data?.message || "Could not permanently delete event.",
+        err.response?.data?.message || "Failed to permanently delete event.",
       );
     }
   };
 
-  useEffect(() => {
-    AOS.init({
-      duration: 550,
-      easing: "ease-out-cubic",
-      once: true,
-      offset: 40,
-    });
-  }, []);
-
-  useEffect(() => {
-    AOS.refresh();
-  }, [events, view]);
+  const pageNumbers = [];
+  if (meta?.last_page) {
+    for (let i = 1; i <= meta.last_page; i++) {
+      pageNumbers.push(i);
+    }
+  }
 
   return (
-    <div className="min-h-screen">
-      {/* Top Navbar */}
-      <header className="bg-white border-b border-slate-100 sticky top-0 z-30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="min-h-screen pb-12">
+      <header className="bg-white/95 border-b border-slate-100 sticky top-0 z-30 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img
               src="/kj-logo.png"
@@ -229,11 +265,12 @@ export default function Events() {
               </h1>
               <p className="text-xs text-slate-500">
                 Signed in as{" "}
-                <span className="font-semibold text-navy">{user.name}</span> (
-                <span className="text-coral font-semibold">{user.role}</span>)
+                <span className="font-semibold text-navy">{user?.name}</span> (
+                <span className="text-coral font-semibold">{user?.role}</span>)
               </p>
             </div>
           </div>
+
           <div className="flex items-center gap-2">
             {canCreate && (
               <button
@@ -255,33 +292,27 @@ export default function Events() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-6xl mx-auto px-4 mt-6">
         {canCreate && (
-          <div className="flex gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-5">
             <button
               type="button"
-              onClick={() => {
-                setLoading(true);
-                setView("active");
-              }}
+              onClick={() => handleTabChange("active")}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition cursor-pointer ${
                 view === "active"
                   ? "bg-navy text-white"
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                  : "bg-white text-navy border border-slate-200 hover:bg-slate-50"
               }`}
             >
               Active Events
             </button>
             <button
               type="button"
-              onClick={() => {
-                setLoading(true);
-                setView("archived");
-              }}
+              onClick={() => handleTabChange("archived")}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition cursor-pointer ${
                 view === "archived"
                   ? "bg-navy text-white"
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                  : "bg-white text-navy border border-slate-200 hover:bg-slate-50"
               }`}
             >
               Archived
@@ -297,13 +328,13 @@ export default function Events() {
           />
         )}
 
-        {feedback && (
-          <div className="mb-4 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-800 flex justify-between">
-            <span>{feedback}</span>
+        {success && (
+          <div className="mb-4 flex items-center justify-between rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-700">
+            <span>{success}</span>
             <button
               type="button"
-              onClick={() => setFeedback("")}
-              className="font-bold cursor-pointer"
+              onClick={() => setSuccess("")}
+              className="font-bold text-emerald-700 hover:text-emerald-900 cursor-pointer"
             >
               &times;
             </button>
@@ -311,12 +342,12 @@ export default function Events() {
         )}
 
         {error && (
-          <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex justify-between">
+          <div className="mb-4 flex items-center justify-between rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
             <span>{error}</span>
             <button
               type="button"
               onClick={() => setError("")}
-              className="font-bold cursor-pointer"
+              className="font-bold text-red-700 hover:text-red-900 cursor-pointer"
             >
               &times;
             </button>
@@ -324,13 +355,20 @@ export default function Events() {
         )}
 
         {loading ? (
-          <p className="text-center text-sm text-slate-500 py-12">
+          <div className="text-center py-20 text-sm text-slate-500">
             Loading events...
-          </p>
+          </div>
         ) : events.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center">
-            <p className="text-sm text-slate-500">
-              {view === "archived" ? "No archived events." : "No events found."}
+          <div className="bg-white/95 rounded-2xl border border-slate-100 p-12 text-center shadow-sm">
+            <p className="text-navy font-semibold">
+              {view === "archived"
+                ? "No archived events found."
+                : "No events matched your filters."}
+            </p>
+            <p className="text-xs text-slate-500 mt-1">
+              {view === "archived"
+                ? "Archived events will appear here."
+                : "Try adjusting your search or resetting your filters."}
             </p>
           </div>
         ) : (
@@ -373,35 +411,33 @@ export default function Events() {
                 type="button"
                 onClick={() => goToPage(page - 1)}
                 disabled={page <= 1}
-                className="rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-navy text-lg font-semibold px-3 py-2 transition cursor-pointer"
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-navy text-xs font-semibold px-3 py-2 transition cursor-pointer"
               >
-                <i class="bi bi-arrow-left-short"></i>
+                Prev
               </button>
 
-              {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(
-                (num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => goToPage(num)}
-                    className={`h-8 w-8 rounded-xl text-md font-semibold transition cursor-pointer ${
-                      num === page
-                        ? "bg-coral text-white"
-                        : "bg-slate-100 hover:bg-slate-200 text-navy"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                ),
-              )}
+              {pageNumbers.map((num) => (
+                <button
+                  key={num}
+                  type="button"
+                  onClick={() => goToPage(num)}
+                  className={`h-8 w-8 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                    num === page
+                      ? "bg-coral text-white"
+                      : "bg-slate-100 hover:bg-slate-200 text-navy"
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
 
               <button
                 type="button"
                 onClick={() => goToPage(page + 1)}
                 disabled={page >= meta.last_page}
-                className="rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-navy text-lg font-semibold px-3 py-2 transition cursor-pointer"
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-navy text-xs font-semibold px-3 py-2 transition cursor-pointer"
               >
-                <i class="bi bi-arrow-right-short"></i>
+                Next
               </button>
             </div>
           </div>
@@ -411,40 +447,31 @@ export default function Events() {
       {formOpen && (
         <EventForm
           initialEvent={editingEvent}
-          onSubmit={handleSave}
-          onClose={() => setFormOpen(false)}
-          serverErrors={serverErrors}
+          onSubmit={handleFormSubmit}
+          onClose={closeForm}
+          serverErrors={formErrors}
+          serverError={formError}
         />
       )}
 
       {viewingEvent && (
-        <div
-          onClick={() => setViewingEvent(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-navy/40 p-4"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-6"
-          >
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${
-                    CATEGORY_STYLES[viewingEvent.category] ||
-                    "bg-slate-50 border-slate-200 text-slate-800"
-                  }`}
-                >
-                  {viewingEvent.category}
-                </span>
-                <span
-                  className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    STATUS_STYLES[viewingEvent.status] ||
-                    "bg-slate-100 text-slate-700"
-                  }`}
-                >
-                  {viewingEvent.status}
-                </span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/40 p-4">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-6">
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-navy">
+                    {viewingEvent.category}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                    {viewingEvent.status}
+                  </span>
+                </div>
+                <h2 className="text-lg font-bold text-navy">
+                  {viewingEvent.title}
+                </h2>
               </div>
+
               <button
                 type="button"
                 onClick={() => setViewingEvent(null)}
@@ -454,43 +481,43 @@ export default function Events() {
               </button>
             </div>
 
-            <h2 className="text-lg font-bold text-navy mb-2">
-              {viewingEvent.title}
-            </h2>
-            <p className="text-sm text-slate-600 mb-5 whitespace-pre-line">
+            <p className="text-sm text-slate-600 mb-5 leading-relaxed">
               {viewingEvent.description}
             </p>
 
-            <dl className="space-y-2 text-sm border-t border-slate-100 pt-4">
+            <div className="space-y-2 text-sm border-t border-slate-100 pt-4">
               <div className="flex justify-between gap-4">
-                <dt className="font-semibold text-navy">Date &amp; Time</dt>
-                <dd className="text-right text-slate-600">
-                  {new Date(viewingEvent.event_date_time).toLocaleString()}
-                </dd>
+                <span className="font-semibold text-navy">Date &amp; Time</span>
+                <span className="text-slate-600 text-right">
+                  {formatDate(viewingEvent.event_date_time)}
+                </span>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="font-semibold text-navy">Location</dt>
-                <dd className="text-right text-slate-600">
+                <span className="font-semibold text-navy">Location</span>
+                <span className="text-slate-600 text-right">
                   {viewingEvent.location}
-                </dd>
+                </span>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="font-semibold text-navy">Capacity</dt>
-                <dd className="text-slate-600">{viewingEvent.capacity}</dd>
+                <span className="font-semibold text-navy">Capacity</span>
+                <span className="text-slate-600">{viewingEvent.capacity}</span>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="font-semibold text-navy">Organizer</dt>
-                <dd className="text-slate-600">
-                  {viewingEvent.organizer?.name || "Unknown"}
-                </dd>
+                <span className="font-semibold text-navy">Organizer</span>
+                <span className="text-slate-600">
+                  {viewingEvent.user?.name ||
+                    viewingEvent.organizer?.name ||
+                    viewingEvent.organizer ||
+                    "N/A"}
+                </span>
               </div>
-            </dl>
+            </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="flex justify-end mt-6 pt-3 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setViewingEvent(null)}
-                className="rounded-xl bg-navy text-white text-sm font-semibold px-4 py-2 cursor-pointer"
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 text-navy text-sm font-medium px-4 py-2 transition cursor-pointer"
               >
                 Close
               </button>

@@ -14,18 +14,18 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         $organizerOneId = DB::table('users')
-            ->where('email', 'karljatienza@gmail.com')
+            ->where('email', 'organizer1@gmail.com')
             ->where('role', 'organizer')
             ->value('id');
 
         $organizerTwoId = DB::table('users')
-            ->where('email', 'jek@gmail.com')
+            ->where('email', 'organizer2@gmail.com')
             ->where('role', 'organizer')
             ->value('id');
 
         if (!$organizerOneId || !$organizerTwoId) {
             throw new RuntimeException(
-                'Expected Organizer users (karljatienza@gmail.com, jek@gmail.com) to exist. Run UserSeeder first.'
+                'Expected Organizer users (organizer1@gmail.com, organizer2@gmail.com) to exist. Run UserSeeder first.'
             );
         }
 
