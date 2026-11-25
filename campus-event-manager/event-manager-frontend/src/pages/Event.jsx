@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import api from "../api";
 import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
@@ -22,8 +24,10 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [view, setView] = useState("active"); // 'active' | 'archived'
+  const [view, setView] = useState("active");
   const [reloadKey, setReloadKey] = useState(0);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,22 +41,36 @@ export default function Events() {
   const role = user.role?.toLowerCase();
   const isAdmin = role === "admin";
   const canCreate = isAdmin || role === "organizer";
+  const goToPage = (targetPage) => {
+    if (
+      !meta ||
+      targetPage < 1 ||
+      targetPage > meta.last_page ||
+      targetPage === page
+    )
+      return;
+    setLoading(true);
+    setPage(targetPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const canManage = (event) =>
     isAdmin ||
     (role === "organizer" && Number(event.user_id) === Number(user.id));
 
-  // Debounce search input by 300ms
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(filters.search), 300);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(filters.search);
+      setPage(1);
+    }, 500);
     return () => clearTimeout(timer);
   }, [filters.search]);
 
-  // Fetch events whenever filters, tab, or reloadKey change
   useEffect(() => {
     const controller = new AbortController();
 
     const params = {};
     if (view === "active") {
+      params.page = page;
       if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
       if (filters.category) params.category = filters.category;
       if (filters.status) params.status = filters.status;
@@ -68,6 +86,7 @@ export default function Events() {
       .get(endpoint, { params, signal: controller.signal })
       .then((res) => {
         setEvents(res.data.data);
+        setMeta(res.data.meta || null);
         setError("");
       })
       .catch((err) => {
@@ -81,6 +100,7 @@ export default function Events() {
     return () => controller.abort();
   }, [
     view,
+    page,
     debouncedSearch,
     filters.category,
     filters.status,
@@ -99,6 +119,7 @@ export default function Events() {
 
   const handleFilterChange = (field, value) => {
     setLoading(true);
+    if (field !== "search") setPage(1);
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -106,6 +127,7 @@ export default function Events() {
     setLoading(true);
     setFilters(DEFAULT_FILTERS);
     setDebouncedSearch("");
+    setPage(1);
   };
 
   const openCreate = () => {
@@ -177,22 +199,41 @@ export default function Events() {
     }
   };
 
+  useEffect(() => {
+    AOS.init({
+      duration: 550,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 40,
+    });
+  }, []);
+
+  useEffect(() => {
+    AOS.refresh();
+  }, [events, view]);
+
   return (
     <div className="min-h-screen">
       {/* Top Navbar */}
       <header className="bg-white border-b border-slate-100 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold text-navy">
-              Campus Event Manager
-            </h1>
-            <p className="text-xs text-slate-500">
-              Signed in as{" "}
-              <span className="font-semibold text-navy">{user.name}</span> (
-              <span className="text-coral font-semibold">{user.role}</span>)
-            </p>
+          <div className="flex items-center gap-3">
+            <img
+              src="/kj-logo.png"
+              alt="Campus Event Manager logo"
+              className="h-9 w-9 object-contain shrink-0"
+            />
+            <div>
+              <h1 className="text-xl font-bold text-navy">
+                Campus Event Manager
+              </h1>
+              <p className="text-xs text-slate-500">
+                Signed in as{" "}
+                <span className="font-semibold text-navy">{user.name}</span> (
+                <span className="text-coral font-semibold">{user.role}</span>)
+              </p>
+            </div>
           </div>
-
           <div className="flex items-center gap-2">
             {canCreate && (
               <button
@@ -215,7 +256,6 @@ export default function Events() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-        {/* Active / Archived Tabs (Organizers & Admins only) */}
         {canCreate && (
           <div className="flex gap-2 mb-4">
             <button
@@ -295,25 +335,79 @@ export default function Events() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {events.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                isArchived={view === "archived"}
-                canManage={canManage(event)}
-                canForceDelete={isAdmin}
-                onView={setViewingEvent}
-                onEdit={openEdit}
-                onDelete={handleDelete}
-                onRestore={handleRestore}
-                onForceDelete={handleForceDelete}
-              />
+            {events.map((event, index) => (
+              <div
+                key={`${view}-${event.id}`}
+                data-aos="fade-up"
+                data-aos-delay={(index % 3) * 80}
+                className="flex"
+              >
+                <EventCard
+                  event={event}
+                  isArchived={view === "archived"}
+                  canManage={canManage(event)}
+                  canForceDelete={isAdmin}
+                  onView={setViewingEvent}
+                  onEdit={openEdit}
+                  onDelete={handleDelete}
+                  onRestore={handleRestore}
+                  onForceDelete={handleForceDelete}
+                />
+              </div>
             ))}
+          </div>
+        )}
+
+        {!loading && meta && meta.last_page > 1 && (
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 bg-white/95 rounded-2xl border border-slate-100 px-5 py-3.5 shadow-sm">
+            <p className="text-xs text-slate-500">
+              Showing{" "}
+              <span className="font-semibold text-navy">{meta.from}</span>–
+              <span className="font-semibold text-navy">{meta.to}</span> of{" "}
+              <span className="font-semibold text-navy">{meta.total}</span>{" "}
+              events
+            </p>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => goToPage(page - 1)}
+                disabled={page <= 1}
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-navy text-lg font-semibold px-3 py-2 transition cursor-pointer"
+              >
+                <i class="bi bi-arrow-left-short"></i>
+              </button>
+
+              {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(
+                (num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => goToPage(num)}
+                    className={`h-8 w-8 rounded-xl text-md font-semibold transition cursor-pointer ${
+                      num === page
+                        ? "bg-coral text-white"
+                        : "bg-slate-100 hover:bg-slate-200 text-navy"
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ),
+              )}
+
+              <button
+                type="button"
+                onClick={() => goToPage(page + 1)}
+                disabled={page >= meta.last_page}
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-navy text-lg font-semibold px-3 py-2 transition cursor-pointer"
+              >
+                <i class="bi bi-arrow-right-short"></i>
+              </button>
+            </div>
           </div>
         )}
       </main>
 
-      {/* Create / Edit Modal */}
       {formOpen && (
         <EventForm
           initialEvent={editingEvent}
@@ -323,7 +417,6 @@ export default function Events() {
         />
       )}
 
-      {/* View Event Details Modal */}
       {viewingEvent && (
         <div
           onClick={() => setViewingEvent(null)}

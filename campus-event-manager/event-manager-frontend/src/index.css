@@ -1,18 +1,40 @@
 @import "tailwindcss";
+@import "bootstrap-icons/font/bootstrap-icons";
 
 @theme {
   --color-navy: #1b254b;
   --color-coral: #ff5e5b;
   --color-coral-hover: #e84b48;
   --color-canvas: #f8f9fc;
+
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 }
 
 body {
+  position: relative;
+  min-height: 100vh;
   background-color: var(--color-canvas);
   color: var(--color-navy);
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: --font-sans;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("/kj-logo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: min(55vw, 520px);
+  opacity: 0.14;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }

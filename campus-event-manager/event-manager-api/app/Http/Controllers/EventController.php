@@ -66,7 +66,7 @@ class EventController extends Controller
         $query->orderBy($sortBy, $sortOrder)->orderBy('id', 'asc');
 
 
-        return EventResource::collection($query->get());
+        return EventResource::collection($query->paginate(9));
 
     }
 
@@ -146,7 +146,7 @@ class EventController extends Controller
             $query->where('user_id', $request->user()->id);
         }
 
-        return EventResource::collection($query->orderBy('deleted_at', 'desc')->get());
+        return EventResource::collection($query->orderBy('deleted_at', 'desc')->paginate(9));
     }
 
     public function restore(Event $event): EventResource

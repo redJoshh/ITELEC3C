@@ -41,15 +41,21 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
         <div className="mb-6">
-          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-coral mb-3">
-            Campus Event Manager
-          </span>
+          <div className="inline-flex items-center gap-2.5 mb-3">
+            <img
+              src="/kj-logo.png"
+              alt="Campus Event Manager logo"
+              className="h-8 w-8 object-contain"
+            />
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-coral">
+              Campus Event Manager
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-navy">Welcome back</h1>
           <p className="text-sm text-slate-500 mt-1">
             Sign in to browse and manage campus events.
           </p>
         </div>
-
         {error && (
           <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
             {error}

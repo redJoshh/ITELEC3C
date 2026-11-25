@@ -1,10 +1,10 @@
 export const CATEGORIES = [
   "Academic",
   "Sports",
-  "Cultural",
-  "Tech",
+  "Community Service",
+  "Arts & Culture",
   "Social",
-  "Workshop",
+  "Career & Professional",
 ];
 
 export const STATUSES = ["Upcoming", "Ongoing", "Completed", "Cancelled"];

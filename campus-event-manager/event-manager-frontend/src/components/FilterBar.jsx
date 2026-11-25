@@ -5,7 +5,7 @@ export default function FilterBar({ filters, onChange, onReset }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <input
           type="text"
           value={filters.search}
@@ -30,7 +30,7 @@ export default function FilterBar({ filters, onChange, onReset }) {
         <select
           value={filters.status}
           onChange={handle("status")}
-          className="rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral"
+          className="w-50 rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral"
         >
           <option value="">All Statuses</option>
           {STATUSES.map((s) => (
@@ -56,10 +56,10 @@ export default function FilterBar({ filters, onChange, onReset }) {
           <select
             value={filters.sort_order}
             onChange={handle("sort_order")}
-            className="w-24 rounded-xl border border-slate-200 px-2.5 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral"
+            className="w-50 rounded-xl border border-slate-200 px-2.5 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral"
           >
-            <option value="asc">Asc</option>
-            <option value="desc">Desc</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
           </select>
         </div>
       </div>
