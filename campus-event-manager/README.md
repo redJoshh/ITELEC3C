@@ -27,7 +27,7 @@ A full-stack campus event management application built with a **Laravel RESTful 
 | Layer | Technologies |
 | :--- | :--- |
 | **Backend** | PHP, Laravel, Laravel Sanctum, MySQL |
-| **Frontend** | React, Vite, React Router, Axios, Tailwind CSS v4, AOS (Animate On Scroll), Google Fonts |
+| **Frontend** | React, Vite, React Router, Axios, Tailwind CSS v4, AOS (Animate On Scroll), Google Fonts, Bootstrap Icons |
 | **Testing & Tools** | Postman, Composer, npm |
 
 ---
@@ -61,7 +61,6 @@ campus-event-manager/
 │           ├── FilterBar.jsx      # Search, category, status, date range & sort controls
 │           ├── EventCard.jsx      # Pastel-badged event card with role-aware actions
 │           └── EventForm.jsx      # Reusable Create/Edit modal with client & server validation
-├── screenshots/                   # Postman & React UI submission screenshots
 └── README.md
 ```
 
@@ -129,10 +128,10 @@ All seeded accounts use the password **`password`**:
 
 | Role | Name | Email | Password | Access Summary |
 | :--- | :--- | :--- | :--- | :--- |
-| **Admin** | Red Josh | `redJosh@gmail.com` | `password` | Full access to all active & archived events, including permanent delete |
-| **Organizer** | Jek Atienza | `jek@gmail.com` | `password` | View, create, edit, archive, and restore own events only |
-| **Organizer** | Josh Atienza | `karljatienza@gmail.com` | `password` | View, create, edit, archive, and restore own events only |
-| **Student** | Student User | `karljdatienza@gmail.com` | `password` | Read-only access to all active events |
+| **Admin** | Admin | `admin@gmail.com` | `password` | Full access to all active & archived events, including permanent delete |
+| **Organizer** | Organizer 1 | `organizer1@gmail.com` | `password` | View, create, edit, archive, and restore own events only |
+| **Organizer** | Organizer 2 | `organizer2@gmail.com` | `password` | View, create, edit, archive, and restore own events only |
+| **Student** | Student User | `student@gmail.com` | `password` | Read-only access to all active events |
 
 ---
 
