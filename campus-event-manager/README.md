@@ -14,8 +14,7 @@ A full-stack campus event management application built with a **Laravel RESTful 
 * **Validation & Resource Formatting:** Dedicated `StoreEventRequest` and `UpdateEventRequest` classes, consistent JSON formatting via `EventResource`, and standard HTTP status codes (`200`, `201`, `204`, `401`, `403`, `404`, `422`).
 
 ### Frontend (React + Vite)
-* **Protected Routes & Session Persistence:** Split `AuthContext` / `useAuth` architecture with automatic `/currentUser` hydration on load, Axios Bearer token interceptors, and automatic `401` session cleanup/redirect.
-* **Interactive Query Controls:** Debounced keyword search (300ms) with `AbortController` request cancellation to prevent stale responses, category/status dropdowns, date range pickers, sort controls, and a one-click reset button.
+* **Protected Routes & Session Persistence:** Split `AuthContext` / `useAuth` architecture with automatic `/currentUser` hydration on load, Axios Bearer token interceptors, and automatic `401` session cleanup/redirect..
 * **Role-Aware Dashboard & Modals:** Conditionally displays **+ New Event**, **Edit**, **Delete**, **Archived** tab, **Restore**, and **Delete Forever** controls based on user role and ownership, alongside a **View** detail modal available to all roles.
 * **Dual Validation:** Client-side form validation paired with inline Laravel `422` field error rendering and `datetime-local` ISO formatting.
 * **UI & Visual Polish:** Warm off-white beige canvas (`#f3efe6`) with a fixed low-opacity custom monogram watermark (`/kj-logo.png`), branded login and navbar headers, pastel category/status badges, Google Fonts typography, and staggered **AOS (Animate On Scroll)** card animations.
@@ -41,7 +40,7 @@ campus-event-manager/
 │   ├── app/Http/Requests/         # StoreEventRequest, UpdateEventRequest
 │   ├── app/Http/Resources/        # EventResource
 │   ├── app/Models/                # User, Event
-│   ├── app/Policies/              # EventPolicy
+│   ├── app/Policies/              # EventPolicy for Role Designation and Permissions
 │   ├── config/cors.php            # CORS config for http://localhost:5173
 │   └── routes/api.php             # API routes & Sanctum middleware
 ├── event-manager-frontend/        # React + Vite SPA
@@ -137,7 +136,7 @@ All seeded accounts use the password **`password`**:
 
 ## API Endpoints
 
-All endpoints except `POST /api/login` require `Authorization: Bearer <token>` and `Accept: application/json` headers.
+All endpoints except `POST /api/login` require `Authorization: Bearer <token>` and `Accept: application/json` headers. This is best done for Postman.
 
 ### Authentication
 | Method | Endpoint | Description | Access |
@@ -190,7 +189,6 @@ All endpoints except `POST /api/login` require `Authorization: Bearer <token>` a
 * **Server-Assigned Ownership:** `user_id` is excluded from Form Request validation rules and assigned exclusively from `$request->user()->id` on the server so clients cannot spoof event ownership.
 * **Authorize Before Validate:** Policy checks execute inside `StoreEventRequest::authorize()` and `UpdateEventRequest::authorize()`, ensuring unauthorized users receive `403 Forbidden` immediately rather than `422` validation details.
 * **Backend as Source of Truth:** React hides unauthorized actions for a cleaner UX, while `EventPolicy` and Sanctum middleware enforce actual security boundaries on every API request.
-* **Stale-Request Protection:** React debounces search input by 300ms and cancels in-flight Axios requests via `AbortController` so slower responses never overwrite newer filter results.
 * **Token Storage Trade-Off:** The Bearer token is stored in `localStorage` to keep sessions active across page refreshes. In production, pairing short-lived tokens with `HttpOnly` cookies would reduce XSS exposure.
 
 ---
